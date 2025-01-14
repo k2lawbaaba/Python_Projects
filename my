@@ -1,0 +1,62 @@
+turtle import Screen,Turtle
+from pongSlate import PongSlate
+from ball import Ball
+import time
+from scoreboard import Scoreboard
+#Constant values
+
+screen = Screen()
+screen.setup(width=1000, height=600)
+screen.bgcolor("black")
+screen.title("Pong Game")
+screen.tracer(0)
+screen.listen()
+
+# The dotted partition at the center
+ycor=-282
+for x in range(0,30):
+    t = Turtle("square")
+    t.fillcolor("white")
+    t.shapesize(stretch_wid=0.5, stretch_len=0.1)
+    if x > 0:
+        ycor +=20
+    t.goto(0,ycor)
+
+#create turtle
+r_player=PongSlate(460)
+l_player=PongSlate(-460)
+
+#create the ball
+ball= Ball()
+
+#r_player controller
+screen.onkey(r_player.up,"Up")
+screen.onkey(r_player.down,"Down")
+
+#l_player controller
+screen.onkey(l_player.up,"w")
+screen.onkey(l_player.down,"s")
+
+game_is_on= True
+scoreboard= Scoreboard()
+
+while game_is_on:
+    time.sleep(0.1)
+    screen.update()
+    ball.move_ball()
+    if ball.ycor()> 290 or ball.ycor()< -290 :
+        ball.bounce_ball_y()
+
+    if ball.distance(r_player) < 15 and ball.xcor() > 390  or ball.distance(l_player) < 20 and ball.xcor() < -395:
+        ball.bounce_ball_x()
+        # game_is_on=False
+
+    if ball.xcor()> 510 :
+       ball.reset_ball()
+       scoreboard.l_player_score()
+    if ball.xcor()< -510 :
+        ball.reset_ball()
+        scoreboard.r_player_score()
+
+        # game_is_on=False
+screen.exitonclick()
